@@ -1,0 +1,71 @@
+class Application extends React.Component {
+  constructor(props){
+    super(props)
+
+    this.state = {
+      display: false,
+      address:""
+    };
+  }
+  
+ inputCheck = (e) => {
+  this.setState({[e.target.name]: e.target.value})
+ }
+  
+ submitCheck = () => {
+   
+   if(!this.state.address){
+     alert("Address field is empty.")
+   } else {
+     // Simple POST request with a JSON body using fetch add your api here
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: this.state.address})
+    };
+    fetch('https://your/api/here', requestOptions)
+        .then(response => response.json())
+        .then(data => {
+      this.setState({ addressResponse: data })
+      this.setState({display: true})
+    });
+   }
+}
+ 
+ resetForm = () => {
+   this.setState({
+     display: !this.state.display,
+     address: ''    
+   })    
+ }
+
+  displayForm() {
+    return (
+      <div className="form">
+        <div className="header">
+          <h2>Welcome!</h2>
+          <p>Please provide your address below.</p>
+        </div>
+        <div className="inputcontainer">
+          {
+          <input name="address" placeholder="Address" onChange={this.inputCheck}/>
+          <button onClick={this.submitCheck}>Submit</button>
+        </div>
+      </div>
+    );
+  }
+  
+  displayData() {
+    return (
+      <div className="form">
+        <p>{this.state.address}</p>        
+        <button onClick={this.resetForm}>Reset</button>
+      </div>
+    )
+  }
+  render() {
+    return this.state.display ? this.displayData() : this.displayForm();
+  }
+}
+
+ReactDOM.render(<Application />, document.getElementById('app'));
